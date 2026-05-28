@@ -14,6 +14,12 @@ assets:
     - "bun-linux-x64\\.zip$"
   linux/arm64:
     - "bun-linux-aarch64\\.zip$"
+  darwin/amd64:
+    - "bun-darwin-x64\\.zip$"
+  darwin/arm64:
+    - "bun-darwin-aarch64\\.zip$"
+  windows/amd64:
+    - "bun-windows-x64\\.zip$"
 
 asset_type:
   type: archive
@@ -51,6 +57,15 @@ platforms:
     runner: ubuntu-latest
   linux/arm64:
     runner: ubuntu-24.04-arm
+  darwin/amd64:
+    runner: macos-latest
+    prefix: ["arch", "-x86_64"]
+  darwin/arm64:
+    runner: macos-latest
+    shell: bash
+  windows/amd64:
+    runner: windows-latest
+    shell: pwsh
 
 notify:
   discord:
