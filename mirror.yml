@@ -58,10 +58,22 @@ platforms:
   linux/arm64:
     runner: ubuntu-24.04-arm
   darwin/amd64:
-    # Intel slice tested on the arm64 macos-14 runner via Rosetta 2 (GitHub's
-    # macos-13 Intel pool is exhausted and deadlocks the push job).
     runner: macos-14
     prefix: ["arch", "-x86_64"]
+    # darwin/amd64 is DECLARED but HELD broken across the entire version range.
+    # bun-compiled binaries SIGILL (exit 132) under Rosetta 2 — a native-startup
+    # illegal instruction, proven across mainline, the -baseline asset, AND
+    # BUN_JSC_useJIT=0 (so it is NOT a JIT/AVX2 path disableable by asset/env).
+    # GitHub retired native Intel macOS runners, so the Intel slice cannot be
+    # CI-validated at all. Rather than silently drop it (as opencode did), an
+    # open-ended `severity: broken` exclude keeps the platform VISIBLE as a 🔒
+    # row — a deliberate, documented gap — and is reversible in one block-delete
+    # if native Intel runners or a Rosetta-safe bun build ever return. The Intel
+    # binary still runs fine on real Intel Macs; it just can't be tested here.
+    exclude:
+      - min_version: "0.0.0"   # whole range — every discovered version
+        severity: broken
+        reason: "bun SIGILLs under Rosetta 2; no native Intel macOS runner to CI-test"
   darwin/arm64:
     runner: macos-14
     shell: bash
